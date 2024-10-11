@@ -49,11 +49,9 @@ def read_excel(file_path):
 
 def read_pdf(file_path):
     reader = PdfReader(file_path)
-    # printing number of pages in pdf file
     print(len(reader.pages))
     tresc_pdf = ""
     for i in range(len(reader.pages)):
-        # print(reader.pages[i].extract_text())
         tresc_pdf += reader.pages[i].extract_text()
 
     pdf_lista_albumow.extend(x for x in tresc_pdf.split('\n') if x.isdigit() and len(x) == 5)
