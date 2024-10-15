@@ -56,6 +56,6 @@ class PaymentsFrame(ctk.CTkFrame):
             self.grid_forget()
 
             # Tworzymy nową ramkę ExcelOptionsFrame w tym samym miejscu
-            ExcelOptionsFrame(self.parent, self.excel_path).grid(row=0, column=1, sticky="nsew")
+            ExcelOptionsFrame(self.parent, self.excel_path, self.pdf_path).grid(row=0, column=1, sticky="nsew")
         else:
             print("Proszę wybrać plik Excel przed przejściem dalej.")
