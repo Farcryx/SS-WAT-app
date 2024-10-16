@@ -1,7 +1,9 @@
 import tkinter
 import customtkinter as ctk
+import datetime
 from tkinter import ttk
-from src.logic.finance_logic_excel import read_excel, read_titles, read_pdf, read_column
+from src.logic.finance_logic_excel import read_excel, read_titles, read_pdf, read_column, analyze_data, \
+    write_to_log_file
 
 sheet_names = None
 workbook = None
@@ -15,7 +17,7 @@ def get_index_of_excel_column(column_str):
 
 
 class ExcelOptionsFrame(ctk.CTkFrame):
-    def __init__(self, parent, excel_path, pdf_path):
+    def __init__(self, parent, excel_path, pdf_path, log_file):
         super().__init__(parent, corner_radius=0, fg_color="transparent")
         self.column_combobox = None
         self.payment_combobox = None
@@ -25,6 +27,7 @@ class ExcelOptionsFrame(ctk.CTkFrame):
         self.parent = parent
         self.excel_path = excel_path
         self.pdf_path = pdf_path
+        self.log_file = log_file
         self.grid_columnconfigure(0, weight=1)
         self.create_widgets()
 
@@ -72,11 +75,14 @@ class ExcelOptionsFrame(ctk.CTkFrame):
         back_button = ctk.CTkButton(self, text="Wróć", command=self.go_back)
         back_button.grid(row=8, column=0, padx=20, pady=10, sticky="ew")
 
+        write_to_log_file(self.log_file, f"{datetime.datetime.now()} - Załadowano GUI opcji Excel\n")
+
     def go_back(self):
         self.grid_forget()
 
     def update_column_combobox(self, event=None):
         sheet_name = self.selected_sheet_name.get()
+        write_to_log_file(self.log_file, f"{datetime.datetime.now()} - Wybrano arkusz: {sheet_name}\n")
         print(sheet_name)
         # find sheet_name in sheet_names and return its position in the list
         if sheet_name:
@@ -88,26 +94,25 @@ class ExcelOptionsFrame(ctk.CTkFrame):
             column_titles = read_titles(workbook, sheet_name)
             self.column_combobox['values'] = column_titles
             self.payment_combobox['values'] = column_titles
+            write_to_log_file(self.log_file,
+                              f"{datetime.datetime.now()} - Załadowano tytuły kolumn z arkusza: {column_titles}\n")
 
     def submit_data(self):
         if self.selected_sheet_name.get() and self.selected_album_column.get() and self.selected_payment_column.get():
+            write_to_log_file(self.log_file,
+                              f"{datetime.datetime.now()} - Wybrano kolumnę z albumami {self.selected_album_column.get()} oraz z potwierdzeniem płatności {self.selected_payment_column.get()}\n")
             # Ukrywamy aktualną ramkę ExcelOptionsFrame, zamiast ją niszczyć
             self.grid_forget()
-            print(f"Wybrany arkusz: {self.selected_sheet_name.get()}")
-            print(f"Wybrana kolumna z numerem albumu: {self.selected_album_column.get()}")
-            print(f"Wybrana kolumna z płatnościami: {self.selected_payment_column.get()}")
 
-            print(f"Numer kolumny Excel: {get_index_of_excel_column(self.selected_album_column.get())}")
+            write_to_log_file(self.log_file, f"{datetime.datetime.now()} - Przejście do analizy danych\n")
 
-            # Get column with album numbers
-            album_column_from_excel = read_column(workbook, number_of_active_sheet,
-                                                  get_index_of_excel_column(self.selected_album_column.get()))
-            print(f"Odczytane komórki z numerami albumów: {album_column_from_excel}")
-
-            # Get column with payment confirmation
-            payment_column_from_excel = read_column(workbook, number_of_active_sheet,
-                                                    get_index_of_excel_column(self.selected_payment_column.get()))
-            print(f"Odczytane komórki z potwierdzeniem płatności: {payment_column_from_excel}")
+            analyze_data(workbook,
+                         self.excel_path,
+                         self.pdf_path,
+                         number_of_active_sheet,
+                         get_index_of_excel_column(self.selected_album_column.get()),
+                         get_index_of_excel_column(self.selected_payment_column.get()),
+                         self.log_file)
 
         else:
             print("Nie wybrano arkusza lub kolumny!")
