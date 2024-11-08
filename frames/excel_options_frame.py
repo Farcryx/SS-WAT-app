@@ -92,6 +92,7 @@ class ExcelOptionsFrame(ctk.CTkFrame):
             number_of_active_sheet = sheet_name
             print(sheet_name)
             column_titles = read_titles(workbook, sheet_name)
+            print(f"Nazwy kolumn: {column_titles}")
             self.column_combobox['values'] = column_titles
             self.payment_combobox['values'] = column_titles
             write_to_log_file(self.log_file,

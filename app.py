@@ -19,25 +19,46 @@ customtkinter.set_default_color_theme('dark-blue')
 class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
+        self.navigation_frame_label = None
+        self.logo_image = None
+        self.navigation_frame = None
+        self.forward_button = None
+        self.back_button = None
+        self.navigation_panel = None
         self.title("SS WAT")
         self.geometry("700x450")
         self.configure_grid()
         self.load_images()
+        self.create_navigation_panel()
         self.create_navigation_frame()
         self.create_frames()
         self.select_frame_by_name("Strona główna")
 
     def configure_grid(self):
-        self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(0, weight=0)  # Navigation panel row
+        self.grid_rowconfigure(1, weight=1)  # Main content row
         self.grid_columnconfigure(1, weight=1)
 
     def load_images(self):
         image_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "src")
         self.logo_image = customtkinter.CTkImage(Image.open(os.path.join(image_path, "logo.png")), size=(26, 26))
 
+    def create_navigation_panel(self):
+        self.navigation_panel = customtkinter.CTkFrame(self, corner_radius=0)
+        self.navigation_panel.grid(row=0, column=0, columnspan=2, sticky="ew")
+        self.navigation_panel.grid_columnconfigure(0, weight=1)
+        self.navigation_panel.grid_columnconfigure(1, weight=1)
+        self.navigation_panel.grid_columnconfigure(2, weight=1)
+
+        self.back_button = customtkinter.CTkButton(self.navigation_panel, text="<", command=self.go_back)
+        self.back_button.grid(row=0, column=0, padx=10, pady=10, sticky="w")
+
+        self.forward_button = customtkinter.CTkButton(self.navigation_panel, text=">", command=self.go_forward)
+        self.forward_button.grid(row=0, column=2, padx=10, pady=10, sticky="e")
+
     def create_navigation_frame(self):
         self.navigation_frame = customtkinter.CTkFrame(self, corner_radius=0)
-        self.navigation_frame.grid(row=0, column=0, sticky="nsew")
+        self.navigation_frame.grid(row=1, column=0, sticky="nsew")
         self.navigation_frame.grid_rowconfigure(4, weight=1)
 
         self.navigation_frame_label = customtkinter.CTkLabel(self.navigation_frame, text="  SS WAT",
@@ -73,17 +94,9 @@ class App(customtkinter.CTk):
             "Inne": OtherPage(self),
         }
 
-    def create_home_frame(self):
-        home_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color="transparent")
-        home_frame.grid_columnconfigure(0, weight=1)
-        home_frame_title = customtkinter.CTkLabel(home_frame, text="Witaj w aplikacji SS WAT!",
-                                                  font=customtkinter.CTkFont(size=20, weight="bold"))
-        home_frame_title.grid(row=0, column=0, padx=20, pady=10)
-        return home_frame
-
     def select_frame_by_name(self, name):
         for frame_name, frame in self.frames.items():
-            frame.grid_forget() if frame_name != name else frame.grid(row=0, column=1, sticky="nsew")
+            frame.grid_forget() if frame_name != name else frame.grid(row=1, column=1, sticky="nsew")
 
     def home_button_event(self):
         self.select_frame_by_name("Strona główna")
@@ -96,6 +109,14 @@ class App(customtkinter.CTk):
 
     def app_info_event(self):
         self.select_frame_by_name("O aplikacji")
+
+    def go_back(self):
+        # Implement the logic for going back
+        pass
+
+    def go_forward(self):
+        # Implement the logic for going forward
+        pass
 
     def select_pdf_file(self):
         file_path = filedialog.askopenfilename(filetypes=[("Pliki PDF", "*.pdf")])
