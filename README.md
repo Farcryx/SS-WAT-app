@@ -1,4 +1,4 @@
-# SS WAT Application
+# SS WAT Application - in progress
 
 ## Overview
 The SS WAT Application is a Python-based tool designed to help student government with their actions e.g. manage and analyze student payment data. It provides a user-friendly interface for selecting and processing PDF and Excel files, extracting relevant information, and updating records accordingly.
