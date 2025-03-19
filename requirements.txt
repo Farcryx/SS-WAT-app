@@ -3,3 +3,5 @@ customtkinter~=5.2.2
 openpyxl~=3.1.5
 pypdf~=5.0.1
 pillow~=10.4.0
+msoffcrypto~=5.4.2
+python-docx~=1.1.2
