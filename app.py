@@ -33,6 +33,7 @@ class App(customtkinter.CTk):
         self.create_navigation_frame()
         self.create_frames()
         self.select_frame_by_name("Strona główna")
+        self.document_file_label = None
 
     def configure_grid(self):
         self.grid_rowconfigure(0, weight=0)  # Navigation panel row
@@ -118,13 +119,14 @@ class App(customtkinter.CTk):
         # Implement the logic for going forward
         pass
 
-    def select_pdf_file(self):
-        file_path = filedialog.askopenfilename(filetypes=[("Pliki PDF", "*.pdf")])
+    def select_document_file(self):
+        file_path = filedialog.askopenfilename(filetypes=[("PDF Files", "*.pdf"), ("DOCX Files", "*.docx")])
         if file_path:
-            self.pdf_file_label.configure(text=os.path.basename(file_path))
-            print(f"Selected PDF file: {file_path}")
-            global pdf_path
-            pdf_path = file_path
+            # Assuming you have a label to show the selected document file
+            self.document_file_label.configure(text=os.path.basename(file_path))
+            print(f"Selected document file: {file_path}")
+            global document_path
+            document_path = file_path
 
     def select_xlsx_file(self):
         file_path = filedialog.askopenfilename(filetypes=[("Pliki Excel", "*.xlsx")])
@@ -147,7 +149,7 @@ class App(customtkinter.CTk):
         radio = customtkinter.CTkRadioButton()
 
     def submit_data(self):
-        print(f"Selected PDF file: {self.pdf_file_label.cget('text')}")
+        print(f"Selected document file: {self.document_file_label.cget('text')}")
         print(f"Selected XLSX file: {self.xlsx_file_label.cget('text')}")
         sheetnames = read_excel(excel_path)
         print(sheetnames)

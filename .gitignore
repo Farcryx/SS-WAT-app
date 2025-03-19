@@ -2,6 +2,9 @@
 ######################
 *.log
 
+# Docx password file #
+.password
+
 # OS generated files #
 ######################
 .DS_Store
@@ -11,3 +14,6 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Python temp files #
+*.pyc
